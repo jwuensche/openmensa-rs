@@ -1,8 +1,8 @@
-use serde::{Serialize, Serializer, Deserialize, ser::SerializeMap};
-use surf::{get, Request};
-use http::method::Method;
-use crate::BASE_URL;
 use crate::error::RequestError;
+use crate::BASE_URL;
+use http::method::Method;
+use serde::{ser::SerializeMap, Deserialize, Serialize, Serializer};
+use surf::Request;
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct CoordinatePair {
@@ -52,9 +52,10 @@ impl Serialize for CanteenRequest {
         };
         let ids = {
             if let Some(ref ids) = &self.ids {
-                Some(ids.iter().fold(String::default(), |acc, ent| {
-                    format!("{},{}", acc, ent)
-                }))
+                Some(
+                    ids.iter()
+                        .fold(String::default(), |acc, ent| format!("{},{}", acc, ent)),
+                )
             } else {
                 None
             }
@@ -106,11 +107,16 @@ impl CanteenRequest {
     }
 
     pub async fn build(self) -> Result<Vec<Canteen>, RequestError> {
-        // TODO Match error 
-        let list_json = Request::new(Method::GET, url::Url::parse(format!("{}/canteens", BASE_URL).as_str()).unwrap())
-            .body_json(&self).unwrap().recv_string().await?;
+        // TODO Match error
+        let list_json = Request::new(
+            Method::GET,
+            url::Url::parse(format!("{}/canteens", BASE_URL).as_str())?,
+        )
+        .body_json(&self)?
+        .recv_string()
+        .await?;
         // let list_json = get(format!("{}/canteens", BASE_URL)).recv_string().await?;
-        let canteens: Vec<Canteen> = serde_json::from_str(&list_json).expect("Could not derive body");
+        let canteens: Vec<Canteen> = serde_json::from_str(&list_json)?;
         Ok(canteens)
     }
 }
