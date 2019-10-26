@@ -17,7 +17,7 @@
 
 > :exclamation: This project requires rust >= 1.40
 
-## How to use 🔧
+## Basic usage 🔧
 
 This library provides a way to build request to the openmensa api and deserialize into rust structures.
 Provided are requests for `Canteen`, `Meal` and `Day`.
@@ -25,7 +25,7 @@ Provided are requests for `Canteen`, `Meal` and `Day`.
 ### Requesting a list of all canteens
 
 ```rust 
-use openmensa_rs::CanteenRequest;
+use openmensa_rs::request::CanteenRequest;
 
 #[tokio::main]
 async fn main() {
@@ -38,14 +38,14 @@ async fn main() {
 ### Requesting the meals for a single canteen
 
 ```rust
-use openmensa_rs::{req_canteens, MealRequest};
+use openmensa_rs::{req_canteens, request::MealRequest};
 
 #[tokio::main]
 async fn main() {
     let list = req_canteens().await.unwrap();
     // Print out the meals offered in the first canteen
-    println!("Meals in the {} canteen on the {}", list[0].name, chrono::Utc::today());
-    let meals = MealRequest::new(list[0].id, chrono::Utc::today())
+    println!("Meals in the {} canteen on the {}", list[0].name(), chrono::Utc::today());
+    let meals = MealRequest::new(list[0].id(), chrono::Utc::today())
         .build()
         .await
         .unwrap();
@@ -53,7 +53,7 @@ async fn main() {
 }
 ```
 
-### Shorthands for generic Requests
+### Shorthands for generic requests
 
 If you want to get all information and specify no further constraints for your requests, you can use the provided shorthands `req_canteens`, `req_days` and `req_meals`.
 
@@ -63,11 +63,15 @@ use openmensa_rs::req_canteens;
 #[tokio::main]
 async fn main() {
     let list = req_canteens().await.unwrap();
-    println!("First canteens has id {} and is called {}", list[0].id, list[0].name);
+    println!("First canteens has id {} and is called {}", list[0].id(), list[0].name());
 }
 ```
 
 ## Add this crate 📦
+
+> :exclamation: Due to a (small problem)[https://github.com/rustasync/surf/issues/73] in `futures-rs` the current version of `surf` does not build.
+> So to add this project in the mean time, add to your `Cargo.toml`
+> `oenmensa-rs = { git = "https://github.com/jwuensche/openmensa-rs.git" }`
 
 All you have to do is add in your `Cargo.toml` under `dependencies`
 ```toml
@@ -88,6 +92,9 @@ If you have any troubles using this library or you find any problems feel free t
 > [:elephant: `@fredowald@mastodon.social`](https://mastodon.social/web/accounts/843376)  
 > [:bird: `@Fredowald`](https://twitter.com/fredowald)  
 
+__This README template is based on group works with [fin-ger](https://github.com/fin-ger).__
+
 ## Show your support
+
 
 Give a :star: if this project helped you!
