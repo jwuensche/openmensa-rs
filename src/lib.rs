@@ -1,5 +1,20 @@
+//! This crate provides a way to interact with the [openmensa api](https://openmensa.org/)
+//! it serializes the request out of structures `CanteenRequest`, `DayRequest` and `MealRequest`.
+//!
+//! A simple example would be requesting a list of all available canteens in the api.
+//!
+//! ```rust
+//! use openmensa_rs::request::CanteenRequest;
+//!
+//! #[tokio::main]
+//! async fn main() {
+//! let list = CanteenRequest::new().build().await.unwrap();
+//! }
+//! ```
+//!
+//! For a closer look on what you can specify in these requests go over to the documentation of these structs to see all available options and a more in-depth example.
+
 use chrono::Date;
-use surf::get;
 #[macro_use]
 extern crate failure;
 
@@ -8,36 +23,35 @@ mod day;
 mod error;
 mod meal;
 mod price;
+pub mod request;
 
-pub use canteen::{Canteen, CanteenRequest};
-pub use day::{Day, DayRequest};
+pub use canteen::{Canteen, CoordinatePair};
+pub use day::Day;
 pub use error::RequestError;
-pub use meal::{DailyMeals, Meal, MealRequest};
+pub use meal::Meal;
+pub use price::Price;
 
 const BASE_URL: &str = "https://openmensa.org/api/v2";
 
+/// Short-hand to get all canteens.
 pub async fn req_canteens() -> Result<Vec<Canteen>, RequestError> {
-    let list_json = get(format!("{}/canteens", BASE_URL)).recv_string().await?;
-    let canteens: Vec<Canteen> = serde_json::from_str(&list_json).expect("Could not derive body");
+    let canteens: Vec<Canteen> = request::CanteenRequest::new().build().await?;
     Ok(canteens)
 }
 
+/// Short-hand to get the opening days starting from today from the given canteen.
 pub async fn req_opening_days(canteen: Canteen) -> Result<Vec<Day>, RequestError> {
-    let day_list = get(format!("{}/canteens/{}/days", BASE_URL, canteen.id))
-        .recv_string()
-        .await?;
-    println!("{:?}", day_list);
-    let days: Vec<Day> = serde_json::from_str(&day_list).expect("Could not deseriaize");
+    let days: Vec<Day> = request::DayRequest::new(canteen.id()).build().await?;
     Ok(days)
 }
 
+/// Short-hand to get all meals offered on the specified day from one canteen.
 pub async fn req_meals(
     canteen: Canteen,
-    _date: Date<chrono::Utc>,
-) -> Result<Vec<DailyMeals>, RequestError> {
-    let meal_list = get(format!("{}/canteens/{}/meals", BASE_URL, canteen.id))
-        .recv_string()
+    date: Date<chrono::Utc>,
+) -> Result<Vec<Meal>, RequestError> {
+    let meals: Vec<Meal> = request::MealRequest::new(canteen.id(), date)
+        .build()
         .await?;
-    let meals: Vec<DailyMeals> = serde_json::from_str(&meal_list).expect("Could not deseriaize");
     Ok(meals)
 }

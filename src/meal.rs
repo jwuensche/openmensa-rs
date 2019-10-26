@@ -1,56 +1,32 @@
-use crate::price::Price;
-use chrono::{Date, Utc};
-use http::Method;
+use getset::CopyGetters;
 use serde::Deserialize;
-use surf::Request;
 
-use crate::error::RequestError;
-use crate::BASE_URL;
+use crate::price::Price;
 
-#[derive(Deserialize, Debug, Clone)]
+/// Representation of a single meal.
+#[derive(Deserialize, CopyGetters, Debug, Clone)]
 pub struct Meal {
+    #[get_copy = "pub"]
     id: u32,
     name: String,
     notes: Vec<String>,
     prices: Price,
 }
 
-#[derive(Deserialize, Debug, Clone)]
-pub struct DailyMeals {
-    date: String,
-    closed: bool,
-    meals: Vec<Meal>,
-}
+// TODO
+// At the moment this is all cloned for simplicity and to work better with the data.
+// This may be changed later on, to reduce the amount of cloning operations.
 
-pub struct MealRequest {
-    canteen_id: u8,
-    date: Date<Utc>,
-}
-
-impl MealRequest {
-    pub fn new(canteen_id: u8, date: Date<Utc>) -> Self {
-        Self { canteen_id, date }
+impl Meal {
+    pub fn name(&self) -> String {
+        self.name.clone()
     }
-    // pub fn with_meal_id(mut self, meal_id: u16) -> Self {
-    //     self.meal_id = Some(meal_id);
-    //     self
-    // }
-    pub async fn build(self) -> Result<Vec<Meal>, RequestError> {
-        let list_json = Request::new(
-            Method::GET,
-            url::Url::parse(
-                format!(
-                    "{}/canteens/{}/days/{}/meals",
-                    BASE_URL,
-                    self.canteen_id,
-                    self.date.format("%Y-%m-%d").to_string()
-                )
-                .as_str(),
-            )?,
-        )
-        .recv_string()
-        .await?;
-        let meals: Vec<Meal> = serde_json::from_str(&list_json)?;
-        Ok(meals)
+
+    pub fn notes(&self) -> Vec<String> {
+        self.notes.clone()
+    }
+
+    pub fn prices(&self) -> Price {
+        self.prices.clone()
     }
 }
