@@ -6,6 +6,15 @@
   <a href="https://github.com/jwuensche/openmensa-rs/blob/master/LICENSE">
     <img alt="GitHub" src="https://img.shields.io/github/license/jwuensche/openmensa-rs.svg">
   </a>
+  <a href="https://crates.io/crates/openmensa-rs">
+    <img src="https://img.shields.io/crates/v/openmensa-rs.svg">
+  </a>
+  <a href="https://docs.rs/openmensa-rs">
+    <img src="https://docs.rs/openmensa-rs/badge.svg">
+  </a>
+  <a href="https://github.com/jwuensche/openmensa-rs/blob/master/LICENSE">
+    <img alt="GitHub" src="https://img.shields.io/github/license/jwuensche/openmensa-rs.svg">
+  </a>
   <a href="http://makeapullrequest.com">
     <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" target="_blank" />
   </a>
