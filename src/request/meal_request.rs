@@ -16,7 +16,7 @@ use crate::BASE_URL;
 /// #[tokio::main]
 /// async fn main() {
 ///     # let canteen_id = 1;
-///     let meals = MealRequest::new(canteen_id, chrono::Utc::today())
+///     let meals = MealRequest::new(canteen_id, chrono::Date::from_utc(chrono::NaiveDate::from_ymd(2019, 11, 11), chrono::Utc))
 ///         .build()
 ///         .await
 ///         .unwrap();
@@ -41,12 +41,12 @@ impl MealRequest {
     /// May return an error if the parameters cannot be serialized or the response cannot be deserialized.
     ///
     /// # Example
-    /// ```rust
+       /// ```rust
     /// # use openmensa_rs::request::MealRequest;
     /// # #[tokio::main]
     /// # async fn main() {
     /// # let canteen_id = 1;
-    /// let offered_meals = MealRequest::new(canteen_id, chrono::Utc::today())
+    /// let offered_meals = MealRequest::new(canteen_id, chrono::Date::from_utc(chrono::NaiveDate::from_ymd(2019, 11, 11), chrono::Utc))
     ///     .build()
     ///     .await
     ///     .unwrap();
