@@ -3,6 +3,13 @@ name = "openmensa-rs"
 version = "0.1.0"
 authors = ["Johannes Wünsche <johannes.wuensche97@gmail.com>"]
 edition = "2018"
+license = "BSD-3-Clause"
+description = "A library to interact with the openmensa api"
+keywords = ["api-bindings"]
+readme = "README.md"
+repository = "https://github.com/jwuensche/openmensa-rs"
+documentation = "https://docs.rs/openmensa-rs"
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -20,3 +27,5 @@ surf = "1.0.3"
 [dev-dependencies]
 tokio = "0.2.0-alpha.6"
 
+[badges]
+travis-ci = { repository = "jwuensche/openmensa-rs" }
