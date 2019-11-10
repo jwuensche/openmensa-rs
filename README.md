@@ -17,8 +17,6 @@
 
 ---
 
-> :exclamation: This project requires rust >= 1.40
-
 ## Basic usage 🔧
 
 This library provides a way to build request to the openmensa api and deserialize into rust structures.
@@ -70,10 +68,6 @@ async fn main() {
 ```
 
 ## Add this crate 📦
-
-> :exclamation: Due to a [small problem](https://github.com/rustasync/surf/issues/73) in `futures-rs` the current version of `surf` does not build.
-> So to add this project in the mean time, add to your `Cargo.toml`
-> `openmensa-rs = { git = "https://github.com/jwuensche/openmensa-rs.git" }`
 
 All you have to do is add in your `Cargo.toml` under `dependencies`
 ```toml
