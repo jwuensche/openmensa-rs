@@ -8,5 +8,5 @@ async fn main() {
         .with_start_date(chrono::Utc::today())
         .build()
         .await;
-    println!("{:?}", days);
+    println!("{:#?}", days);
 }

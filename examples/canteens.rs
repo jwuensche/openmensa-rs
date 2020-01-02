@@ -7,5 +7,5 @@ async fn main() {
         .with_near_coordinates(CoordinatePair::new(52.139618827301902, 11.6475999355316))
         .build()
         .await;
-    println!("{:?}", list);
+    println!("{:#?}", list);
 }

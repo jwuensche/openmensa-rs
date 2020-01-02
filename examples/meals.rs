@@ -12,5 +12,5 @@ async fn main() {
         .build()
         .await
         .unwrap();
-    println!("{:?}", meals);
+    println!("{:#?}", meals);
 }
