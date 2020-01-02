@@ -1,8 +1,6 @@
 use crate::error::RequestError;
 use crate::BASE_URL;
-use http::method::Method;
 use serde::{ser::SerializeMap, Serialize, Serializer};
-use surf::Request;
 
 use crate::canteen::{Canteen, CoordinatePair};
 
@@ -12,24 +10,23 @@ use crate::canteen::{Canteen, CoordinatePair};
 /// # Example
 ///
 /// ```rust
+/// # tokio::runtime::Runtime::new().unwrap().block_on(async {
 /// use openmensa_rs::request::CanteenRequest;
 /// use openmensa_rs::CoordinatePair;
 ///
-/// #[tokio::main]
-/// async fn main() {
-///     let near_canteens = CanteenRequest::new()
-///         .with_near_coordinates(
-///             CoordinatePair::new(
-///                 52.1396188273019,
-///                 11.6475999355316,
-///             )
+/// let near_canteens = CanteenRequest::new()
+///     .with_near_coordinates(
+///         CoordinatePair::new(
+///             52.1396188273019,
+///             11.6475999355316,
 ///         )
-///         .build()
-///         .await
-///         .unwrap();
-/// }
+///     )
+///     .build()
+///     .await
+///     .unwrap();
+/// # })
 /// ```
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct CanteenRequest {
     // near[lat], near[lng]
     near: Option<CoordinatePair>,
@@ -84,22 +81,17 @@ impl CanteenRequest {
     /// Returns a new instance of a request.
     /// If you want to perform the same request again, you do not need to set all parameters anew. Requests are clonable, so to not lose them after building just create a clone!
     /// ```rust
-    /// # use openmensa_rs::request::CanteenRequest;
-    /// # #[tokio::main]
-    /// # async fn main() {
+    /// # tokio::runtime::Runtime::new().unwrap().block_on(async {
+    /// use openmensa_rs::request::CanteenRequest;
+    ///
     /// let my_super_complex_request = CanteenRequest::new();
     /// let result = my_super_complex_request.clone().build().await.unwrap();
     /// // And we can use it again!
     /// let result = my_super_complex_request.build().await.unwrap();
-    /// # }
+    /// # })
     /// ```
     pub fn new() -> Self {
-        Self {
-            near: None,
-            distance: None,
-            ids: None,
-            has_coordinates: None,
-        }
+        Default::default()
     }
 
     /// Specify a `CoordinatePair` to which the canteen should be near to.
@@ -119,9 +111,12 @@ impl CanteenRequest {
 
     /// Add an id that should be included in the response.
     ///
-    /// Note: If atleast one id is specified, only these ids will be included in the response. Even if other canteens would also match all other parameters. The same is true vice versa.
+    /// Note: If at least one id is specified,
+    /// only these ids will be included in the response.
+    /// Even if other canteens would also match all other parameters.
+    /// The same is true vice versa.
     pub fn with_id<U: Into<u8>>(mut self, id: U) -> Self {
-        if let None = self.ids {
+        if self.ids.is_none() {
             self.ids = Some(Vec::new());
         }
         if let Some(ref mut ids) = self.ids {
@@ -152,8 +147,8 @@ impl CanteenRequest {
     /// ```rust
     /// # use openmensa_rs::request::CanteenRequest;
     /// # use openmensa_rs::CoordinatePair;
-    /// # #[tokio::main]
-    /// # async fn main() {
+    ///
+    /// # tokio::runtime::Runtime::new().unwrap().block_on(async {
     /// let near_canteens = CanteenRequest::new()
     ///     .with_near_coordinates(
     ///         CoordinatePair::new(
@@ -164,16 +159,16 @@ impl CanteenRequest {
     ///     .build()
     ///     .await
     ///     .unwrap();
-    /// # }
+    /// # })
     /// ```
     pub async fn build(self) -> Result<Vec<Canteen>, RequestError> {
-        let list_json = Request::new(
-            Method::GET,
-            url::Url::parse(format!("{}/canteens", BASE_URL).as_str())?,
-        )
-        .set_query(&self)?
-        .recv_string()
-        .await?;
+        let list_json = reqwest::Client::new()
+            .get(url::Url::parse(format!("{}/canteens", BASE_URL).as_str())?)
+            .query(&self)
+            .send()
+            .await?
+            .text()
+            .await?;
         let canteens: Vec<Canteen> = serde_json::from_str(&list_json)?;
         Ok(canteens)
     }

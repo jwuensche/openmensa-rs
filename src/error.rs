@@ -1,5 +1,4 @@
 use std::convert::From;
-use surf::Exception;
 
 /// Possible Errors are summed up as `RequestError` each variant describes a possible error that could occur at different stages.
 #[derive(Debug, Fail)]
@@ -20,10 +19,10 @@ pub enum RequestError {
     ParserError { error: url::ParseError },
 }
 
-impl From<Exception> for RequestError {
-    fn from(_error: Exception) -> Self {
+impl From<reqwest::Error> for RequestError {
+    fn from(_error: reqwest::Error) -> Self {
         Self::ConnectionError {
-            reason: "Request failed to go through, this error happened in `surf`".to_string(),
+            reason: "Request failed to go through, this error happened in `reqwest`".to_string(),
         }
     }
 }
