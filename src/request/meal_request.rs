@@ -1,6 +1,4 @@
 use chrono::{Date, Utc};
-use http::Method;
-use surf::Request;
 
 use crate::error::RequestError;
 use crate::Meal;
@@ -11,16 +9,15 @@ use crate::BASE_URL;
 /// A list of meals is here returned all are offered at that day. For more information about the `Meal` have a look at its struct.
 /// # Example
 /// ```rust
+/// # tokio::runtime::Runtime::new().unwrap().block_on(async {
 /// use openmensa_rs::request::MealRequest;
 ///
-/// #[tokio::main]
-/// async fn main() {
-///     # let canteen_id = 1;
-///     let meals = MealRequest::new(canteen_id, chrono::Date::from_utc(chrono::NaiveDate::from_ymd(2019, 11, 11), chrono::Utc))
-///         .build()
-///         .await
-///         .unwrap();
-/// }
+/// let canteen_id = 1;
+/// let meals = MealRequest::new(canteen_id, chrono::Date::from_utc(chrono::NaiveDate::from_ymd(2019, 11, 11), chrono::Utc))
+///     .build()
+///     .await
+///     .unwrap();
+/// # })
 /// ```
 pub struct MealRequest {
     canteen_id: u8,
@@ -41,21 +38,20 @@ impl MealRequest {
     /// May return an error if the parameters cannot be serialized or the response cannot be deserialized.
     ///
     /// # Example
-       /// ```rust
-    /// # use openmensa_rs::request::MealRequest;
-    /// # #[tokio::main]
-    /// # async fn main() {
-    /// # let canteen_id = 1;
+    /// ```rust
+    /// # tokio::runtime::Runtime::new().unwrap().block_on(async {
+    /// use openmensa_rs::request::MealRequest;
+    ///
+    /// let canteen_id = 1;
     /// let offered_meals = MealRequest::new(canteen_id, chrono::Date::from_utc(chrono::NaiveDate::from_ymd(2019, 11, 11), chrono::Utc))
     ///     .build()
     ///     .await
     ///     .unwrap();
-    /// # }
+    /// # })
     /// ```
     pub async fn build(self) -> Result<Vec<Meal>, RequestError> {
-        let list_json = Request::new(
-            Method::GET,
-            url::Url::parse(
+        let list_json = reqwest::Client::new()
+            .get(url::Url::parse(
                 format!(
                     "{}/canteens/{}/days/{}/meals",
                     BASE_URL,
@@ -63,10 +59,11 @@ impl MealRequest {
                     self.date.format("%Y-%m-%d").to_string()
                 )
                 .as_str(),
-            )?,
-        )
-        .recv_string()
-        .await?;
+            )?)
+            .send()
+            .await?
+            .text()
+            .await?;
         let meals: Vec<Meal> = serde_json::from_str(&list_json)?;
         Ok(meals)
     }

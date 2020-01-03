@@ -4,12 +4,11 @@
 //! A simple example would be requesting a list of all available canteens in the api.
 //!
 //! ```rust
+//! # tokio::runtime::Runtime::new().unwrap().block_on(async {
 //! use openmensa_rs::request::CanteenRequest;
 //!
-//! #[tokio::main]
-//! async fn main() {
 //! let list = CanteenRequest::new().build().await.unwrap();
-//! }
+//! # })
 //! ```
 //!
 //! For a closer look on what you can specify in these requests go over to the documentation of these structs to see all available options and a more in-depth example.

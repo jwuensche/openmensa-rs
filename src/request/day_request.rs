@@ -1,7 +1,5 @@
 use chrono::{Date, Utc};
-use http::method::Method;
 use serde::{ser::SerializeMap, Serialize, Serializer};
-use surf::Request;
 
 use crate::day::Day;
 use crate::error::RequestError;
@@ -10,15 +8,14 @@ use crate::BASE_URL;
 /// Struct to create and then issue requests to see a range of opening days.
 /// # Example
 /// ```rust
+/// # tokio::runtime::Runtime::new().unwrap().block_on(async {
 /// use openmensa_rs::request::DayRequest;
 ///
-/// #[tokio::main]
-/// async fn main() {
-///     // As an example we just use the canteen with id `1` here
-///     let req = DayRequest::new(1);
-///     let list_of_days = req.build().await.unwrap();
-///     println!("{:?}", list_of_days);
-/// }
+/// // As an example we just use the canteen with id `1` here
+/// let req = DayRequest::new(1);
+/// let list_of_days = req.build().await.unwrap();
+/// println!("{:?}", list_of_days);
+/// # })
 /// ```
 #[derive(Clone)]
 pub struct DayRequest {
@@ -66,10 +63,10 @@ impl DayRequest {
     ///
     /// # Example
     /// ```rust
-    /// # use openmensa_rs::request::DayRequest;
-    /// # #[tokio::main]
-    /// # async fn main() {
-    /// # let canteen_id = 1;
+    /// # tokio::runtime::Runtime::new().unwrap().block_on(async {
+    /// use openmensa_rs::request::DayRequest;
+    ///
+    /// let canteen_id = 1;
     /// let open_days = DayRequest::new(canteen_id)
     ///     .with_start_date(
     ///         chrono::Utc::today()
@@ -77,16 +74,18 @@ impl DayRequest {
     ///     .build()
     ///     .await
     ///     .unwrap();
-    /// # }
+    /// # })
     /// ```
     pub async fn build(self) -> Result<Vec<Day>, RequestError> {
-        let list_json = Request::new(
-            Method::GET,
-            url::Url::parse(format!("{}/canteens/{}/days", BASE_URL, self.canteen_id).as_str())?,
-        )
-        .set_query(&self)?
-        .recv_string()
-        .await?;
+        let list_json = reqwest::Client::new()
+            .get(url::Url::parse(
+                format!("{}/canteens/{}/days", BASE_URL, self.canteen_id).as_str(),
+            )?)
+            .query(&self)
+            .send()
+            .await?
+            .text()
+            .await?;
         let canteens: Vec<Day> = serde_json::from_str(&list_json)?;
         Ok(canteens)
     }
