@@ -29,13 +29,7 @@ impl Serialize for DayRequest {
         S: Serializer,
     {
         let mut map = serializer.serialize_map(Some(1)).unwrap();
-        let date_string: Option<String> = {
-            if let Some(date) = self.start {
-                Some(date.format("%Y-%m-%d").to_string())
-            } else {
-                None
-            }
-        };
+        let date_string: Option<String> = self.start.map(|e| e.format("%Y-%m-%d").to_string());
         map.serialize_entry("start", &date_string)?;
         map.end()
     }

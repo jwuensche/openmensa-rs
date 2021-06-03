@@ -43,30 +43,9 @@ impl Serialize for CanteenRequest {
     where
         S: Serializer,
     {
-        let lat = {
-            if let Some(pos) = &self.near {
-                Some(pos.latitude())
-            } else {
-                None
-            }
-        };
-        let lng = {
-            if let Some(pos) = &self.near {
-                Some(pos.longitude())
-            } else {
-                None
-            }
-        };
-        let ids = {
-            if let Some(ref ids) = &self.ids {
-                Some(
-                    ids.iter()
-                        .fold(String::default(), |acc, ent| format!("{},{}", acc, ent)),
-                )
-            } else {
-                None
-            }
-        };
+        let lat = self.near.map(|e| *e.latitude());
+        let lng = self.near.map(|e| *e.longitude());
+        let ids = self.ids.as_ref().map(|e| e.iter().fold(String::default(), |acc, ent| format!("{},{}", acc, ent)));
         let mut map = serializer.serialize_map(Some(5)).unwrap();
         map.serialize_entry("near[lat]", &lat)?;
         map.serialize_entry("near[lng]", &lng)?;
