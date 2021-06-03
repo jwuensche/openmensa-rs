@@ -1,4 +1,4 @@
-use getset::{Getters, CopyGetters};
+use getset::{CopyGetters, Getters};
 use serde::Deserialize;
 
 /// Reprensentation of a day.

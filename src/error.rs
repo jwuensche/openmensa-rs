@@ -6,14 +6,10 @@ use thiserror::Error;
 pub enum RequestError {
     #[error("failed to connect, because of {}", reason)]
     ConnectionError { reason: String },
-    #[error(
-        "Deserialization failed to pass, the request did not deliver the structure expected."
-    )]
+    #[error("Deserialization failed to pass, the request did not deliver the structure expected.")]
     SerdeError { error: serde_urlencoded::ser::Error },
 
-    #[error(
-        "Deserialization failed to pass, the request did not deliver the structure expected."
-    )]
+    #[error("Deserialization failed to pass, the request did not deliver the structure expected.")]
     SerdeJsonError { error: serde_json::error::Error },
 
     #[error("Parsing of Url has failed, given URI did not conform with standard.")]

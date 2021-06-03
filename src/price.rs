@@ -1,4 +1,4 @@
-use getset::{ CopyGetters, Getters};
+use getset::{CopyGetters, Getters};
 use serde::Deserialize;
 
 /// Representation of possible prices of every category.

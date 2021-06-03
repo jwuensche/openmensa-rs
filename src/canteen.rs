@@ -1,4 +1,4 @@
-use getset::{CopyGetters, Setters, Getters};
+use getset::{CopyGetters, Getters, Setters};
 use serde::Deserialize;
 
 /// Representation for geographic location given to each canteen.
