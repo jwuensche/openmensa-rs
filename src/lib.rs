@@ -15,7 +15,6 @@
 
 use chrono::Date;
 #[macro_use]
-extern crate failure;
 
 mod canteen;
 mod day;
