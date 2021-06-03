@@ -1,32 +1,17 @@
-use getset::CopyGetters;
+use getset::{CopyGetters, Getters};
 use serde::Deserialize;
 
 use crate::price::Price;
 
 /// Representation of a single meal.
-#[derive(Deserialize, CopyGetters, Debug, Clone)]
+#[derive(Deserialize, CopyGetters, Getters, Debug, Clone)]
 pub struct Meal {
     #[get_copy = "pub"]
     id: u32,
+    #[get = "pub"]
     name: String,
+    #[get = "pub"]
     notes: Vec<String>,
+    #[get = "pub"]
     prices: Price,
-}
-
-// TODO
-// At the moment this is all cloned for simplicity and to work better with the data.
-// This may be changed later on, to reduce the amount of cloning operations.
-
-impl Meal {
-    pub fn name(&self) -> String {
-        self.name.clone()
-    }
-
-    pub fn notes(&self) -> Vec<String> {
-        self.notes.clone()
-    }
-
-    pub fn prices(&self) -> Price {
-        self.prices.clone()
-    }
 }

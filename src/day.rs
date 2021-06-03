@@ -1,17 +1,12 @@
-use getset::CopyGetters;
+use getset::{Getters, CopyGetters};
 use serde::Deserialize;
 
 /// Reprensentation of a day.
-#[derive(Deserialize, CopyGetters, Debug, Clone)]
+#[derive(Deserialize, CopyGetters, Getters, Debug, Clone)]
 pub struct Day {
     /// Date strings are in the `YYYY-MM-DD` format.
+    #[get = "pub"]
     date: String,
     #[get_copy = "pub"]
     closed: bool,
-}
-
-impl Day {
-    pub fn date(&self) -> String {
-        self.date.clone()
-    }
 }
