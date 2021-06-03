@@ -25,12 +25,12 @@ impl CoordinatePair {
 #[derive(Deserialize, CopyGetters, Debug, Clone)]
 pub struct Canteen {
     #[get_copy = "pub"]
-    id: u8,
+    id: u16,
     name: String,
     city: String,
     address: String,
     #[get_copy = "pub"]
-    coordinates: CoordinatePair,
+    coordinates: Option<CoordinatePair>,
 }
 
 impl Canteen {

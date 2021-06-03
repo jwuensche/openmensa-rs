@@ -33,7 +33,7 @@ pub struct CanteenRequest {
     // near[dist]
     distance: Option<f32>,
     // ids
-    ids: Option<Vec<u8>>,
+    ids: Option<Vec<u16>>,
     // hasCoordinates
     has_coordinates: Option<bool>,
 }
@@ -115,7 +115,7 @@ impl CanteenRequest {
     /// only these ids will be included in the response.
     /// Even if other canteens would also match all other parameters.
     /// The same is true vice versa.
-    pub fn with_id<U: Into<u8>>(mut self, id: U) -> Self {
+    pub fn with_id<U: Into<u16>>(mut self, id: U) -> Self {
         if self.ids.is_none() {
             self.ids = Some(Vec::new());
         }
@@ -128,7 +128,7 @@ impl CanteenRequest {
     /// Add multiple ids to the request.
     pub fn with_ids<T: std::iter::Iterator>(mut self, ids: T) -> Self
     where
-        T::Item: Into<u8>,
+        T::Item: Into<u16>,
     {
         for id in ids {
             self = self.with_id(id);
@@ -169,6 +169,7 @@ impl CanteenRequest {
             .await?
             .text()
             .await?;
+        println!("{:#?}", &list_json);
         let canteens: Vec<Canteen> = serde_json::from_str(&list_json)?;
         Ok(canteens)
     }

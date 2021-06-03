@@ -20,13 +20,13 @@ use crate::BASE_URL;
 /// # })
 /// ```
 pub struct MealRequest {
-    canteen_id: u8,
+    canteen_id: u16,
     date: Date<Utc>,
 }
 
 impl MealRequest {
     /// Return a new instance of `MealRequest`.
-    pub fn new(canteen_id: u8, date: Date<Utc>) -> Self {
+    pub fn new(canteen_id: u16, date: Date<Utc>) -> Self {
         Self { canteen_id, date }
     }
     // pub fn with_meal_id(mut self, meal_id: u16) -> Self {

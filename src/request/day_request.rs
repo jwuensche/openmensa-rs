@@ -20,7 +20,7 @@ use crate::BASE_URL;
 #[derive(Clone)]
 pub struct DayRequest {
     start: Option<Date<Utc>>,
-    canteen_id: u8,
+    canteen_id: u16,
 }
 
 impl Serialize for DayRequest {
@@ -44,7 +44,7 @@ impl Serialize for DayRequest {
 impl DayRequest {
     /// Create a new instance to get opening days from a specific canteen.
     /// If you want to issue multiple requests, this struct implements `Clone` so before you issue a request simply `.clone()` if you need it later on.
-    pub fn new(canteen_id: u8) -> Self {
+    pub fn new(canteen_id: u16) -> Self {
         Self {
             start: None,
             canteen_id,
