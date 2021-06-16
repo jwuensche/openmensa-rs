@@ -1,7 +1,7 @@
 <h1 align="center">🥢 Welcome to openmensa-rs 🍴</h1>
 <p align="center">
-  <a href="https://travis-ci.org/jwuensche/openmensa-rs">
-    <img src="https://api.travis-ci.org/jwuensche/openmensa-rs.svg?branch=master">
+  <a href="https://github.com/jwuensche/openmensa-rs/actions">
+    <img src="https://github.com/jwuensche/openmensa-rs/actions/workflows/test_and_push.yml/badge.svg">
   </a>
   <a href="https://github.com/jwuensche/openmensa-rs/blob/master/LICENSE">
     <img alt="GitHub" src="https://img.shields.io/github/license/jwuensche/openmensa-rs.svg">
