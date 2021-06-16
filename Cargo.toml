@@ -25,6 +25,3 @@ url = "2.2.2"
 
 [dev-dependencies]
 tokio = { version = "1.6.1", features = ["full"] }
-
-[badges]
-travis-ci = { repository = "jwuensche/openmensa-rs" }
