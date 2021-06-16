@@ -1,0 +1,37 @@
+name: "test_and_badge"
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  test_and_badge:
+    name: "Test and Badge"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Prepare"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl git
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+          rustup toolchain install nightly
+          rustup toolchain install beta
+          git clone https://github.com/jwuensche/openmensa-rs.git repo
+
+      - name: "Stable"
+        run: |
+          cd repo
+          cargo +stable build
+
+      - name: "Beta"
+        run: |
+          cd repo
+          cargo +beta build
+
+      - name: "Nightly"
+        run: |
+          cd repo
+          cargo +nightly build
